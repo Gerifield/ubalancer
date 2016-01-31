@@ -1,4 +1,4 @@
-# μBalance
+# μBalancer
 
 This is a small (now just) TCP load balancer.
 
