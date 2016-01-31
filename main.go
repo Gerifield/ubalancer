@@ -128,10 +128,10 @@ func handleConnection(conn net.Conn) {
 	}
 	bck.UpdateConn(1)
 	bck.UpdateLastConn()
+	defer LogStats(bck) //Defer in different order
 	defer bck.UpdateConn(-1)
 	defer bckConn.Close()
-
-	log.Println(bck, bck.OpenConn)
+	LogStats(bck)
 
 	go io.Copy(bckConn, conn)
 	io.Copy(conn, bckConn)
@@ -143,4 +143,10 @@ func ChooseBackend(backends []*Backend, alg string) *Backend {
 		return backends[rand.Intn(len(backends))]
 	}
 	return nil
+}
+
+func LogStats(bck *Backend) {
+	//for _, bck := range backends {
+	log.Printf("%s: Connected: %d, IsAlive: %t, LastConnection: %s", bck.Addr, bck.OpenConn, bck.Alive, bck.LastConn.String())
+	//}
 }
